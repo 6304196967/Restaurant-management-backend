@@ -21,7 +21,9 @@ app.use("/api/cart", CartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/feedback", feedbackRouter);
 app.use("/api/category", CategoryRouter);
-
+app.get("/", (req, res) => {
+    res.send("Welcome to the Restaurant Management API!");
+  });
 async function main() {
     try {
         await mongoose.connect(process.env.MONGODB_URI);
