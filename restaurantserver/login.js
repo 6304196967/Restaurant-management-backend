@@ -87,6 +87,8 @@ UserRouter.post('/forgot-password', async (req, res) => {
             return res.status(400).json({ message: "User with this email does not exist" });
         }
         const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: '15m' });
+        console.log("SMTP_USER:", process.env.SMTP_USER);
+        console.log("SMTP_PASS:", process.env.SMTP_PASS);
         const transporter = nodemailer.createTransport({
             secure: true,
             service: 'gmail',
