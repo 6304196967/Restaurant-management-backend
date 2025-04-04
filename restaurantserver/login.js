@@ -102,7 +102,7 @@ UserRouter.post('/forgot-password', async (req, res) => {
 
             to: email,
             subject: 'Password Reset',
-            html: `<p>You requested a password reset. <a href="http://localhost:3001/reset-password/${resetToken}">Click here</a> to reset your password. This link is valid for 15 minutes.</p>`
+            html: `<p>You requested a password reset. <a href="https://restaurant-management-backend-1.onrender.com/${resetToken}">Click here</a> to reset your password. This link is valid for 15 minutes.</p>`
         };
 
         await transporter.sendMail(mailOptions);
