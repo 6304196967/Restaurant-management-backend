@@ -116,4 +116,19 @@ feedbackRouter.delete("/deletefeedback", async (req, res) => {
     res.status(500).json({ message: "Failed to delete feedback" });
   }
 });
+feedbackRouter.get('/admin/feedbacks', async (req, res) => {
+  try {
+    const userEmail = req.query.email; // reading from query string
+
+    if (userEmail !== 'admin@gmail.com') {
+      return res.status(403).json({ error: 'Unauthorized access' });
+    }
+
+    const feedbacks = await Feedback.find();
+    res.json(feedbacks);
+  } catch (err) {
+    console.error("Error fetching feedbacks:", err.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 export default feedbackRouter;
