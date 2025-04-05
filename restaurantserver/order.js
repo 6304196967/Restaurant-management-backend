@@ -133,7 +133,51 @@ orderRouter.put("/cancel/:id", async (req, res) => {
   }
 });
 
+orderRouter.get("/adminallorders", async (req, res) => {
+  const email = req.query.email;
 
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
 
+  try {
+    // 🛡️ If admin email, return all orders
+    if (email === "admin@gmail.com") {
+      const allOrders = await order.find();
+      return res.status(200).json(allOrders);
+    }
+
+    // 👤 For regular users, return only their orders
+    const userOrders = await order.find({ email });
+    res.status(200).json(userOrders);
+  } catch (err) {
+    console.error("Error fetching orders:", err);
+    res.status(500).json({ message: "Failed to fetch orders" });
+  }
+});
+orderRouter.put("/update/:orderId", async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+
+  try {
+    const updatedOrder = await order.findByIdAndUpdate(
+      orderId,
+      { status: status },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.status(200).json({
+      message: "Order status updated successfully",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.error("Error updating order:", error);
+    res.status(500).json({ message: "Server error while updating order" });
+  }
+});
   
 export default orderRouter;
