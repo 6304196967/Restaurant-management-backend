@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import { Router } from "express";
 import express from "express";
 import { Feedback } from "./db.js";
-
+import { User } from "./db.js"; 
 dotenv.config();
 
 const feedbackRouter = Router();
@@ -131,4 +131,31 @@ feedbackRouter.get('/admin/feedbacks', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+feedbackRouter.get("/item/:itemName", async (req, res) => {
+  try {
+    const { itemName } = req.params;
+
+    const feedbacks = await Feedback.find({ itemName });
+
+    const enrichedFeedbacks = await Promise.all(
+      feedbacks.map(async (fb) => {
+        const foundUser = await User.findOne({ email: fb.email }, "username");
+        return {
+          ...fb.toObject(),
+          username: foundUser?.username || "Anonymous",
+        };
+      })
+    );
+    console.log("Enriched Feedbacks:", enrichedFeedbacks);
+    const averageRating =
+      enrichedFeedbacks.reduce((sum, f) => sum + f.rating, 0) /
+        enrichedFeedbacks.length || 0;
+    console.log("Average Rating:", averageRating);
+    res.json({ reviews: enrichedFeedbacks, averageRating });
+  } catch (error) {
+    console.error("Error fetching feedbacks:", error);
+    res.status(500).json({ message: "Failed to fetch feedbacks" });
+  }
+});
+
 export default feedbackRouter;
