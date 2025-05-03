@@ -89,7 +89,8 @@ const restaurantSchema = new Schema({
   guests: { type: Number, required: true },  // Make sure this exists
   tableType: { type: String, required: true },
   specialRequests: { type: String },
-  phone: { type: String }  // Optional
+  phone: { type: String }  ,
+  status: { type: String, default: "Pending" }, // Default status
 });
 
 const User = mongoose.model('User', UserSchema);
