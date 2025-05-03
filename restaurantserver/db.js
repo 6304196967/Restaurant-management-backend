@@ -81,7 +81,16 @@ const Categoryschema=new Schema({
     name: { type: String, required: true },
     img: { type: String, required: true },
 });
-    
+const restaurantSchema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  date: { type: String, required: true },
+  time: { type: String, required: true },
+  guests: { type: Number, required: true },  // Make sure this exists
+  tableType: { type: String, required: true },
+  specialRequests: { type: String },
+  phone: { type: String }  // Optional
+});
 
 const User = mongoose.model('User', UserSchema);
 const Menu = mongoose.model('Menu', MenuSchema);
@@ -89,6 +98,7 @@ const Cart = mongoose.model("Cart", CartSchema);
 const order = mongoose.model("order",orderSchema);
 const Feedback = mongoose.model("feedback", FeedbackSchema);
 const Category = mongoose.model("Category", Categoryschema);
+const Reservation = mongoose.model('Reservation', restaurantSchema);
 
 
 
@@ -99,5 +109,6 @@ export {
     order,
     Feedback,
     Category,
+    Reservation,
 }
 
