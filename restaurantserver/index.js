@@ -6,7 +6,7 @@ import CartRouter from "./cart.js";
 import orderRouter from "./order.js";
 import feedbackRouter from './feedback.js';
 import CategoryRouter from './category.js';
-
+import ReserveRouter from './reservations.js';   
 
 import cors from 'cors';
 
@@ -21,6 +21,9 @@ app.use("/api/cart", CartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/feedback", feedbackRouter);
 app.use("/api/category", CategoryRouter);
+app.use("/api/reserve",ReserveRouter
+
+)
 app.get("/", (req, res) => {
     res.send("Welcome to the Restaurant Management API!");
   });
