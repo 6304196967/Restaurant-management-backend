@@ -55,6 +55,57 @@ UserRouter.post('/signup', async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
+
+// Add this to your UserRouter
+UserRouter.post('/google-auth', async (req, res) => {
+  const bodySchema = z.object({
+    email: z.string().email(),
+    username: z.string(),
+    profileImage: z.string().optional(),
+    phonenumber: z.string().optional()
+  });
+
+  const parsed = bodySchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({
+      message: "Invalid Google OAuth data",
+      errors: parsed.error.errors
+    });
+  }
+
+  const { email, username, profileImage, phonenumber } = parsed.data;
+
+  try {
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        username,
+        email,
+        profileImage: profileImage || null,
+        phonenumber: phonenumber || "",
+        isGoogleAuth: true
+      });
+    }
+
+    const token = jwt.sign({ id: user._id.toString() }, JWT_SECRET);
+
+    res.status(200).json({
+      token,
+      email: user.email,
+      username: user.username,
+      profileImage: user.profileImage || null
+    });
+
+  } catch (e) {
+    console.error("Google Auth Error:", e);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
+
 UserRouter.post('/signin', async (req, res) => {
     try {
         const { email, password } = req.body;
